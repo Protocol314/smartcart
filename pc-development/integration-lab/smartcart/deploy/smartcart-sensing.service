@@ -1,0 +1,31 @@
+# 현재 계정의 ~/.config/systemd/user/에 수동 설치하는 선택 템플릿이다.
+[Unit]
+Description=SmartCart LiDAR 및 UWB 읽기 전용 센싱
+After=network.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+WorkingDirectory=%h/SmartCart-Sensing
+EnvironmentFile=%h/.config/smartcart-sensing/sensing.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=ROS_LOG_DIR=%t/smartcart-sensing/ros
+RuntimeDirectory=smartcart-sensing
+ExecStart=/bin/bash %h/SmartCart-Sensing/scripts/start-sensing.sh
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=10
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%t/smartcart-sensing
+# DDS에 UDP/유닉스 소켓과 /dev/shm, 시리얼에 /dev 접근이 필요하다.
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

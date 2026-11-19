@@ -1,0 +1,200 @@
+{
+  "version": "1.0.1",
+  "harness": "native Chromium DOM/Canvas; injected EventSource; native File/Blob APIs; download navigation intercepted",
+  "passed": 73,
+  "checks": [
+    "no fabricated data at startup",
+    "pure black background",
+    "only actual RETURNS count, no OBJECTS estimate",
+    "old instruction banners and help cards removed",
+    "settings dialog initially closed",
+    "sample automatically zooms to .25m",
+    "partial sample label is always visible",
+    "sample keeps 56 real returns",
+    "sample retains only adjacency guides",
+    "sample cannot be LIVE",
+    "diagnostics show original 128 / 720",
+    "diagnostics show 40 missing, 32 below minimum",
+    "export retains all original raw positions",
+    "export has version and sample provenance",
+    "merged PNG blob contains all layers",
+    "two functional download requests",
+    "demo resets display to 5m",
+    "demo visibly nonmeasurement",
+    "demo renders dense contour, not object centroids",
+    "sector values remain white",
+    "all three range colors actually rasterized",
+    "animation independent of 2Hz data refresh",
+    "static grid not rebuilt during animation",
+    "return layer rebuilds on scan only",
+    "pause freezes data rather than scanner",
+    "resume displays newest pending frame",
+    "one Hz is a functional setting",
+    "reduced motion stops sweep only",
+    "mount and contour settings applied",
+    "invalid color thresholds are rejected",
+    "reset restores new v1.0.1 settings",
+    "ROS handler displays incoming geometry",
+    "Hz selection changes real SSE request path",
+    "old SSE subscriptions are closed",
+    "1.5s stale timeout without another event",
+    "stale distances and counts hidden",
+    "stale scan canvas is physically cleared",
+    "fresh recovery works",
+    "disconnect never falls back to demo",
+    "disconnect hides contours too",
+    "server replay cannot claim LIVE",
+    "malformed input disables displayed measurements",
+    "input error recovers with valid envelope",
+    "native File API works for saved JSON",
+    "file loading does not label data LIVE",
+    "JSONL file has twelve real frames",
+    "JSONL playback reaches last frame",
+    "scrubbing selects exactly one recorded frame",
+    "320x568 no horizontal overflow",
+    "320x568 square radar fits viewport",
+    "360x800 no horizontal overflow",
+    "360x800 square radar fits viewport",
+    "390x844 no horizontal overflow",
+    "390x844 square radar fits viewport",
+    "414x896 no horizontal overflow",
+    "414x896 square radar fits viewport",
+    "768x1024 no horizontal overflow",
+    "768x1024 square radar fits viewport",
+    "820x1180 no horizontal overflow",
+    "820x1180 square radar fits viewport",
+    "844x390 no horizontal overflow",
+    "844x390 square radar fits viewport",
+    "1024x768 no horizontal overflow",
+    "1024x768 square radar fits viewport",
+    "1280x800 no horizontal overflow",
+    "1280x800 square radar fits viewport",
+    "1440x900 no horizontal overflow",
+    "1440x900 square radar fits viewport",
+    "1920x1080 no horizontal overflow",
+    "1920x1080 square radar fits viewport",
+    "320px settings modal fits and scrolls",
+    "no horizontal overflow inside mobile dialog",
+    "no JavaScript page exceptions"
+  ],
+  "viewports": [
+    {
+      "width": 320,
+      "height": 568,
+      "canvas_css": {
+        "x": 12,
+        "y": 80,
+        "width": 296,
+        "height": 296
+      }
+    },
+    {
+      "width": 360,
+      "height": 800,
+      "canvas_css": {
+        "x": 12,
+        "y": 80,
+        "width": 336,
+        "height": 336
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "canvas_css": {
+        "x": 16,
+        "y": 80,
+        "width": 358,
+        "height": 358
+      }
+    },
+    {
+      "width": 414,
+      "height": 896,
+      "canvas_css": {
+        "x": 16,
+        "y": 80,
+        "width": 382,
+        "height": 382
+      }
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "canvas_css": {
+        "x": 59,
+        "y": 80,
+        "width": 650,
+        "height": 650
+      }
+    },
+    {
+      "width": 820,
+      "height": 1180,
+      "canvas_css": {
+        "x": 85,
+        "y": 80,
+        "width": 650,
+        "height": 650
+      }
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "canvas_css": {
+        "x": 97,
+        "y": 80,
+        "width": 650,
+        "height": 650
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "canvas_css": {
+        "x": 89,
+        "y": 100,
+        "width": 556,
+        "height": 556
+      }
+    },
+    {
+      "width": 1280,
+      "height": 800,
+      "canvas_css": {
+        "x": 156.796875,
+        "y": 100,
+        "width": 588,
+        "height": 588
+      }
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "canvas_css": {
+        "x": 184.40625,
+        "y": 100,
+        "width": 688,
+        "height": 688
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "canvas_css": {
+        "x": 307,
+        "y": 100,
+        "width": 868,
+        "height": 868
+      }
+    }
+  ],
+  "page_errors": [],
+  "not_tested": [
+    "real browser HTTP/SSE or file:// navigation",
+    "native localStorage persistence",
+    "native completed downloads",
+    "actual mobile/tablet devices",
+    "Raspberry Pi ROS/DDS/C1 hardware"
+  ]
+}

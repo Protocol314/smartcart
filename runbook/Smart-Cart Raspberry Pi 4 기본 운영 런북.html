@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta name="source-sha256" content="e665fee22f720fba0fd50d37e1a9cc466f95908b7364778a058cd0b9a94259c3">
+<meta name="source-sha256" content="ca72f6c8b9eae613efc12f0bb34f0eda4500697a237cce51c7c4d916653cc662">
 <title>SmartCart Raspberry Pi 4 운영 런북</title>
 <style>
 :root{color-scheme:light;--ink:#17283b;--muted:#52677c;--accent:#087d79;--line:#d9e3e9;--soft:#f1f6f8;--navy:#102b42;--code:#122b3d}
@@ -33,7 +33,7 @@
 <p>제공받은 Pi 내보내기 원본에는 실제 GPIO 백엔드를 사용할 수 있는 수동 조종 코드가 있다. 재부팅 후 사용자가 보고한 센싱 실행 경로는 <code>~/smartcart/SmartCart-D5-v2/smartcart/cart.py</code>다. 실제 조종 설치 경로와 Pi 파일 해시는 별도 확인이 필요하다. <code>pi-runtime/pi-export-reference/</code>는 개인 설정을 제외한 제공 원본 소스 기준본이며 실제 Pi 설치본과의 일치 여부는 미확인이다.</p>
 <p><strong>현재 PC의 <code>pi-runtime/</code>은 실제 주행 승인본이 아니다.</strong> 그 안의 <code>manual.sh</code>와 <code>drive.py</code>는 가상 출력만 허용하고 실제 GPIO를 잠근다. 가져온 기존 수동 서버는 LiDAR·BU04를 표시하지만 센서 무효 시 모터를 잠그는 기능은 없으며, 2초 PWM 응답 감시가 Pi 실물 설치본에 적용됐는지도 확인되지 않았다. 이 상태에서 자동 추종·장애물 회피가 실물에 동작한다고 간주하지 않는다.</p>
 <p>실물 구동 전에 좌우 전진 극성, 독립 모터 전원 차단 및 Pi 비상정지 피드백, LiDAR 장착·정지 범위, 단일 BU04 측정·태그 위치 정확도, 센서 이상과 통신 만료 시 정지·재시작 조건을 확인한다. 엔코더가 없어 PWM 응답과 실제 바퀴 움직임은 다르다. 화면 STOP은 PWM 0 요청이다.</p>
-<p>PC에서 개발하는 현재 사본은 <code>pc-development/</code>, Pi 실행 후보 사본은 <code>pi-runtime/</code>이다. 두 폴더는 자동 동기화되지 않으며, Pi 후보에는 장치별 현장 설정·인증서와 빌드 산출물이 없다. Ubuntu ARM64/ROS 2 Humble 빌드와 Pi 배포·실물 시험은 아직 하지 않았다. 원본 Pi 내보내기 ZIP과 장치 설정 백업은 별도로 보존한다.</p>
+<p>PC에서 개발하는 현재 사본은 <code>pc-development/</code>, Pi 실행 후보 사본은 <code>pi-runtime/</code>이다. <code>pc-development/integration-lab/</code>은 별도 통합 개발·회귀 기준이며 실측 샘플과 장치 설정을 포함하지 않는다. 두 폴더는 자동 동기화되지 않으며, Pi 후보에는 장치별 현장 설정·인증서와 빌드 산출물이 없다. Ubuntu ARM64/ROS 2 Humble 빌드와 Pi 배포·실물 시험은 아직 하지 않았다. 원본 Pi 내보내기 ZIP과 장치 설정 백업은 별도로 보존한다.</p>
 <h2 id="현재-알려진-상태">현재 알려진 상태</h2>
 <p>Pi의 마지막으로 확인된 주소는 <code>192.168.43.212</code>다. 현재 주소는 Pi에서 <code>hostname -I</code>로 확인한다. Pi·PC·휴대폰은 같은 <code>192.168.43.X</code> 사설망에 연결한다.</p>
 <p>이전에 실행한 별도 가상 주행 서버는 HTTPS <code>18084</code>에서 <code>MockBackend</code>를 사용했다. 새 <code>pi-runtime/manual.sh</code>는 HTTPS <code>8081</code>에서 가상 출력만 사용한다. 둘은 별도 프로그램이며 새 사본은 아직 Pi에 배포되지 않았다. 실측 LiDAR·BU04 값은 8765 센싱 서버에서 읽는다. 같은 포트에서 서버를 중복 실행하지 않는다.</p>

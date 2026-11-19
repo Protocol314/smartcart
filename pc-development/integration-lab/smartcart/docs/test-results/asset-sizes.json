@@ -1,0 +1,14 @@
+{
+  "version": "1.0.1",
+  "web_bytes_uncompressed": 58688,
+  "assets": {
+    "web/assets/icon.svg": 296,
+    "web/css/app.css": 8942,
+    "web/index.html": 7192,
+    "web/js/app.js": 17092,
+    "web/js/core.js": 10146,
+    "web/js/radar.js": 11279,
+    "web/js/sample.js": 3741
+  },
+  "external_runtime_assets": 0
+}

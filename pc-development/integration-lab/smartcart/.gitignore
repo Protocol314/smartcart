@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+recordings/
+.pytest_cache/
+validation-output/
+.DS_Store
+smartcart_uwb/lib/*.dll
+smartcart_uwb/lib/*.so
+smartcart_uwb/lib/*.dylib
+build/
+dist/
+*.egg-info/

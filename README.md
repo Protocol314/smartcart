@@ -15,6 +15,7 @@ Raspberry Pi 4 / Ubuntu 22.04 ARM64 / ROS 2 Humble을 사용하는 스마트카�
 | [`pc-development/`](pc-development/README.md) | Pi 내보내기와 최신 가상 안전 수정본을 기준으로 한 PC 개발 사본 |
 | [`pi-runtime/`](pi-runtime/README.md) | Ubuntu ARM64 MOCK 실행 후보와 제공받은 Pi 원본 소스 보존본 |
 | [`pc-development/virtual-lab-18084/`](pc-development/virtual-lab-18084/README.md) | 최신 18084 가상 화면·버튼 진단 소스 |
+| [`pc-development/integration-lab/`](pc-development/integration-lab/README.md) | 통합 센싱·추적 개발 코드와 Python·JS·BU03/BU04 C 회귀 기준 |
 | [`pi-runtime/pi-export-reference/`](pi-runtime/pi-export-reference/README.md) | 제공받은 Pi 원본의 소스 기준본. 설치본과 해시 비교 전 |
 | [`runbook/`](<runbook/Smart-Cart Raspberry Pi 4 기본 운영 런북.md>) | 실제 구동 구성, 센싱 및 별도 가상 시험 절차 |
 | [`HANDOFF.md`](HANDOFF.md) | 최신 작업 결과, 미확인 항목과 이전 기록 |

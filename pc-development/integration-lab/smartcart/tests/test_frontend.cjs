@@ -1,0 +1,33 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const C = require('../web/js/core.js');
+let count = 0;
+function test(name, fn) { fn(); count++; console.log('PASS', name); }
+const sample = C.normaliseScan(JSON.parse(fs.readFileSync(path.join(__dirname,'../samples/user_scan_truncated.json'))));
+function ray(angle, range = 1, extra = {}) { return C.normaliseScan({angle_min:angle,angle_max:angle,angle_increment:.1,range_min:.05,range_max:16,ranges:[range],...extra}); }
+test('sample128not720',()=>assert.equal(sample.ranges.length,128));
+test('sampleStats',()=>assert.deepEqual([sample.stats.valid_sensor_rays,sample.stats.no_return_rays,sample.stats.below_min_rays],[56,40,32]));
+test('truncatedFlag',()=>assert.equal(sample.truncated,true));
+test('sampleNoInventedRays',()=>assert.equal(C.projectScan(sample,{radius:.25}).points.length,56));
+test('frontUp',()=>{const p=C.projectScan(ray(0),{}).points[0];assert.deepEqual(C.toScreen(p,100,100,20),{x:100,y:80});});
+test('mirrorLeftPositiveY',()=>{const p=C.projectScan(ray(Math.PI/2),{}).points[0];assert.equal(Math.round(C.toScreen(p,100,100,20).x),120);assert.equal(p.y,1);});
+test('mirrorRightNegativeY',()=>{const p=C.projectScan(ray(-Math.PI/2),{}).points[0];assert.equal(Math.round(C.toScreen(p,100,100,20).x),80);assert.equal(p.y,-1);});
+test('yaw90',()=>{const p=C.projectScan(ray(0),{yaw:90}).points[0];assert.ok(Math.abs(p.x)<1e-10);assert.equal(p.y,1);});
+test('offset',()=>{const p=C.projectScan(ray(0),{offsetX:.4,offsetY:.2}).points[0];assert.equal(p.x,1.4);assert.equal(p.y,.2);});
+test('cropAfterTransform',()=>assert.equal(C.projectScan(ray(0,4.8),{offsetX:.4}).points.length,0));
+test('nullUnknown',()=>assert.equal(C.projectScan(ray(0,null),{}).sectors.front.min_m,null));
+test('belowSensorMin',()=>assert.equal(C.projectScan(ray(0,.03),{}).points.length,0));
+test('rawPreserved',()=>{const s=ray(0,7);C.projectScan(s,{});assert.equal(s.ranges[0],7);});
+test('infiniteToNull',()=>assert.equal(ray(0,Infinity).ranges[0],null));
+test('metadataInvalid',()=>assert.throws(()=>ray(0,1,{angle_increment:0})));
+test('arrayTextInvalid',()=>assert.throws(()=>ray(0,'bad')));
+test('middleOmissionRejected',()=>assert.throws(()=>ray(0,1,{ranges:[1,'...',2]})));
+test('malformedSettingsSafe',()=>assert.deepEqual(C.validateSettings({radius:9,displayHz:99,yaw:NaN,offsetX:99,offsetY:99,trail:9}),C.defaults));
+test('demoLabeled',()=>assert.equal(C.syntheticScan(0).source.kind,'synthetic'));
+test('demoFull720',()=>assert.equal(C.syntheticScan(0).ranges.length,720));
+test('demoDynamic',()=>assert.notDeepEqual(C.syntheticScan(0).ranges,C.syntheticScan(1).ranges));
+test('captureWrapper',()=>assert.equal(C.normaliseScan({scan:sample}).ranges.length,128));
+test('replayCannotClaimLive',()=>assert.equal(C.normaliseScan({...sample,source:{kind:'ros'}},{kind:'replay'}).source.kind,'replay'));
+console.log(`JavaScript geometry tests: ${count} passed`);

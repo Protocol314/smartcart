@@ -1,0 +1,12 @@
+/* 구동 감독기 패널. 감독기 서버가 제공한 화면에만 연결된다. */
+.drive-supervisor { grid-column: 1 / -1; border: 1px solid #25303a; border-radius: 8px; padding: .6rem .8rem;
+  background: #10171d; color: #d4e5ed; font-size: 14px; }
+/* 센서 상세를 자동 배치로 돌려 DOM 순서대로 상태 줄 → 감독기 → 센서 상세가 되게 한다. */
+.workspace:has(> .drive-supervisor) > .sensor-details { grid-area: auto; grid-column: 1 / -1; }
+.supervisor-row { display: flex; flex-wrap: wrap; gap: .4rem; }
+.supervisor-row button { font: inherit; padding: .45rem .8rem; border-radius: 6px; border: 1px solid #555;
+  background: #1c1c1c; color: inherit; min-height: 44px; }
+.supervisor-state { margin: .5rem 0 .2rem; font-weight: 600; }
+.supervisor-result { margin: 0; opacity: .8; }
+.supervisor-reasons { margin: .3rem 0 0; padding-left: 1.2rem; }
+.supervisor-reasons li { margin: .1rem 0; }

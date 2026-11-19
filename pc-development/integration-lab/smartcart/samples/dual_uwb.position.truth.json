@@ -1,0 +1,201 @@
+{
+  "schema": "smartcart.uwb_position_truth.v1",
+  "source": "synthetic",
+  "frame_id": "base_link",
+  "tag_height_base_link_m": 0.9,
+  "sensor_origins_m": {
+    "uwb_left": [
+      0.756,
+      0.244,
+      0.286
+    ],
+    "uwb_right": [
+      0.756,
+      -0.244,
+      0.286
+    ]
+  },
+  "quantization": {
+    "range_cm": 1,
+    "angle_deg": 1
+  },
+  "notes": "실물 측정이 아닌 합성 기준점이다. 높이는 지면이 아닌 후륜축 base_link 원점 기준이며 장착·RF·지연 검수를 대신하지 않는다.",
+  "checkpoints": [
+    {
+      "label": "front_2m",
+      "event_index": 9,
+      "expected_valid": true,
+      "position_xy_m": [
+        2.0,
+        0.0
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "front_left_3m",
+      "event_index": 19,
+      "expected_valid": true,
+      "position_xy_m": [
+        3.0,
+        1.0
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "front_right_5m",
+      "event_index": 29,
+      "expected_valid": true,
+      "position_xy_m": [
+        5.0,
+        -1.0
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "left",
+      "event_index": 39,
+      "expected_valid": true,
+      "position_xy_m": [
+        0.0,
+        2.0
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "right",
+      "event_index": 49,
+      "expected_valid": true,
+      "position_xy_m": [
+        0.0,
+        -2.0
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "rear",
+      "event_index": 59,
+      "expected_valid": true,
+      "position_xy_m": [
+        -2.0,
+        0.0
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "asynchronous_pair",
+      "event_index": 71,
+      "expected_valid": false,
+      "position_xy_m": null,
+      "max_error_m": null
+    },
+    {
+      "label": "skew_recovery",
+      "event_index": 77,
+      "expected_valid": true,
+      "position_xy_m": [
+        2.5,
+        0.2
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "one_sensor_outlier",
+      "event_index": 79,
+      "expected_valid": false,
+      "position_xy_m": null,
+      "max_error_m": null
+    },
+    {
+      "label": "outlier_recovery",
+      "event_index": 85,
+      "expected_valid": true,
+      "position_xy_m": [
+        2.5,
+        0.2
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "wrong_tag",
+      "event_index": 87,
+      "expected_valid": false,
+      "position_xy_m": null,
+      "max_error_m": null
+    },
+    {
+      "label": "id_recovery",
+      "event_index": 93,
+      "expected_valid": true,
+      "position_xy_m": [
+        2.5,
+        0.2
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "bad_checksum",
+      "event_index": 94,
+      "expected_valid": false,
+      "position_xy_m": null,
+      "max_error_m": null
+    },
+    {
+      "label": "checksum_recovery",
+      "event_index": 100,
+      "expected_valid": true,
+      "position_xy_m": [
+        2.5,
+        0.2
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "estimator_age_timeout",
+      "event_index": 101,
+      "expected_valid": false,
+      "position_xy_m": null,
+      "max_error_m": null
+    },
+    {
+      "label": "collector_timeout",
+      "event_index": 102,
+      "expected_valid": false,
+      "position_xy_m": null,
+      "max_error_m": null
+    },
+    {
+      "label": "disconnected",
+      "event_index": 103,
+      "expected_valid": false,
+      "position_xy_m": null,
+      "max_error_m": null
+    },
+    {
+      "label": "reconnect_recovery",
+      "event_index": 113,
+      "expected_valid": true,
+      "position_xy_m": [
+        2.5,
+        0.2
+      ],
+      "max_error_m": 0.08
+    },
+    {
+      "label": "impossible_slant_height",
+      "event_index": 115,
+      "expected_valid": false,
+      "position_xy_m": null,
+      "max_error_m": null
+    },
+    {
+      "label": "final_recovery",
+      "event_index": 125,
+      "expected_valid": true,
+      "position_xy_m": [
+        2.5,
+        0.2
+      ],
+      "max_error_m": 0.08
+    }
+  ]
+}

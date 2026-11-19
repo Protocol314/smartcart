@@ -1,0 +1,50 @@
+{
+  "schema": "smartcart.field_acceptance_config.v1",
+  "coordinate_contract": {
+    "frame_id": "base_link",
+    "origin": "rear_axle_center",
+    "x_axis": "forward",
+    "y_axis": "left",
+    "z_axis": "up",
+    "translation_unit": "m",
+    "yaw_unit": "deg"
+  },
+  "origin_verified": false,
+  "axes_verified": false,
+  "lidar_device": {
+    "port": null,
+    "expected_device_identity": "",
+    "device_identity_verified": false
+  },
+  "expected_lidar_frame_id": "lidar_scan",
+  "mounting_evidence": {
+    "uwb_left": {
+      "translation_verified": false,
+      "yaw_verified": false,
+      "height_verified": false,
+      "level_verified": false,
+      "reference_point": "unknown",
+      "evidence_note": ""
+    },
+    "uwb_right": {
+      "translation_verified": false,
+      "yaw_verified": false,
+      "height_verified": false,
+      "level_verified": false,
+      "reference_point": "unknown",
+      "evidence_note": ""
+    },
+    "lidar_center": {
+      "translation_verified": false,
+      "yaw_verified": false,
+      "height_verified": false,
+      "level_verified": false,
+      "reference_point": "unknown",
+      "evidence_note": ""
+    }
+  },
+  "range_model_verified": false,
+  "tag_height_verified": false,
+  "min_uwb_baseline_m": 0.05,
+  "max_lidar_lateral_offset_m": 0.05
+}
