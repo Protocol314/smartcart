@@ -1,0 +1,58 @@
+/* Keep the existing radar layout; only add manual session/status elements. */
+.drive-session { display:grid; gap:8px; margin-top:4px; }
+.drive-session label { color:#a9bccb; font-size:10px; }
+.drive-session input { width:100%; min-height:36px; font-size:11px; }
+.drive-session-actions { display:flex; flex-wrap:wrap; gap:6px; }
+.drive-session-actions button { flex:1; padding:7px 8px; min-height:36px; font-size:11px; }
+.drive-session-actions #driveArm { background:#173e39; border-color:#427c72; }
+.drive-backend { margin:0; color:#96b7cf; font-size:10px; }
+.drive-backend[data-hardware="true"] { color:#ffd08a; }
+.axis-pad button.is-held { background:#2b526b; }
+.drive-speed { display:flex; justify-content:space-between; gap:8px; padding:7px 0; font-size:11px; }
+.drive-speed strong { font-size:16px; }
+.drive-estimate-note { margin:0; color:#99a8b5; font-size:10px; }
+.autonomy-options { display:grid; gap:6px; min-width:0; padding:10px; border:1px solid #45515a; border-radius:8px; }
+.autonomy-options h2 { margin:0; font-size:13px; }
+.autonomy-options p { margin:0; color:#c0cbd2; font-size:11px; line-height:1.45; overflow-wrap:anywhere; }
+.autonomy-options button { display:flex; flex-wrap:wrap; justify-content:space-between; gap:4px; min-height:40px; padding:8px; text-align:left; opacity:1; color:#bfcad1; background:#242c32; border:1px solid #56636b; }
+.autonomy-options button span { color:#f5c98b; }
+.autonomy-options button[aria-pressed="true"] { background:#175342; border-color:#67c5a5; color:#fff; }
+.autonomy-options label { font-size:11px; color:#c0cbd2; }
+.autonomy-options input { width:100%; min-width:0; }
+.autonomy-options canvas { width:100%; height:auto; border:1px solid #56636b; border-radius:6px; }
+@media (max-height:550px) and (orientation:landscape) {
+ .drive-session { gap:3px; } .drive-session input { min-height:28px; padding:5px; }
+ .drive-session-actions button { min-height:28px; padding:3px 5px; }
+ .drive-session label { font-size:9px; } .drive-speed { padding:2px 0; }
+}
+
+/* 가상 주행 토글은 헤더에서 조작하고 작은 화면에서는 다음 줄로 배치한다. */
+.header { flex-wrap:wrap; }
+.autonomy-header { flex:1 1 380px; min-width:0; display:grid; justify-items:center; gap:3px; }
+.autonomy-switches { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
+.autonomy-switches button { min-height:44px; padding:7px 10px; border-color:#56636b; background:#242c32; color:#e5edf2; touch-action:manipulation; }
+.autonomy-switches button span { color:#f5c98b; }
+.autonomy-switches button[aria-pressed="true"] { background:#175342; border-color:#67c5a5; color:#fff; }
+#simHeaderStatus { margin:0; color:#f5c98b; font-size:11px; text-align:center; overflow-wrap:anywhere; }
+@media (max-width:800px) { .autonomy-header { order:3; flex-basis:100%; } }
+@media (max-width:400px) { .autonomy-switches { width:100%; } .autonomy-switches button { flex:1 1 90px; padding:6px; font-size:11px; } }
+
+/* 조작 버튼은 항상 보이고 부가 설정은 필요할 때 펼친다. */
+@media (min-width:801px) {
+ .header { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); }
+ .header .connection { justify-self:end; }
+}
+.workspace { grid-template-areas:'left radar right' 'status status status' 'autonomy autonomy autonomy' 'details details details'; }
+.autonomy-details { grid-area:autonomy; min-width:0; border:1px solid #2a323a; border-radius:8px; background:#0b0f13; }
+.autonomy-details > summary { padding:12px 16px; color:#d4e5ed; cursor:pointer; }
+.autonomy-details .autonomy-options { margin:0 12px 12px; grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr)); align-items:center; }
+.autonomy-details .autonomy-options h2, .autonomy-details .autonomy-options > p, .autonomy-details .autonomy-options canvas { grid-column:1 / -1; }
+.autonomy-details .autonomy-options canvas { max-width:260px; }
+@media (max-width:700px) and (orientation:portrait) {
+ .workspace { grid-template-areas:'radar radar' 'left right' 'status status' 'autonomy autonomy' 'details details'; }
+ .radar-stage { width:min(100%, max(180px, calc(100svh - 430px))); }
+ .drive-side { min-height:210px; padding:9px; gap:5px; }
+ .axis-pad { width:min(100%,130px); }
+}
+
+.drive-control-status { margin:0; color:#f5c98b; font-size:11px; overflow-wrap:anywhere; }

@@ -1,0 +1,41 @@
+{
+  "schema": "smartcart.dual_uwb_config.v1",
+  "allowed_tag_address": 28185,
+  "logical_target_id": 0,
+  "timeout_ms": 500,
+  "sensors": {
+    "uwb_left": {
+      "port": null,
+      "expected_device_identity": "",
+      "device_identity_verified": false,
+      "frame_id": "uwb_left",
+      "translation_m": [0.756, 0.244, 0.286],
+      "yaw_deg": 0.0,
+      "mounting_verified": false,
+      "calibration_profile": "raw_unverified"
+    },
+    "uwb_right": {
+      "port": null,
+      "expected_device_identity": "",
+      "device_identity_verified": false,
+      "frame_id": "uwb_right",
+      "translation_m": [0.756, -0.244, 0.286],
+      "yaw_deg": 0.0,
+      "mounting_verified": false,
+      "calibration_profile": "raw_unverified"
+    }
+  },
+  "lidar": {
+    "frame_id": "lidar_scan",
+    "translation_m": [0.817, 0.0, 0.2678],
+    "yaw_deg": 0.0,
+    "mounting_verified": false,
+    "calibration_profile": "raw_unverified"
+  },
+  "metadata": {
+    "coordinate_basis": "base_link는 후륜축 실제 중앙이며 D5 CAD 좌표 (-0.335, 0, 0.100)m이다. +X 전방, +Y 좌측, +Z 위쪽이다.",
+    "translation_reference": "UWB는 PCB 중심 CAD 배치이며 RF 위상 중심이 아니다. LiDAR는 CAD 스캔면 원점이다. 모든 외부파라미터와 yaw는 실측 검수 전 설계 제안이다.",
+    "measurement_reference": "range_m는 센서와 태그의 원시 공간 거리이다. 수평 거리나 위치로 확정하지 않으며 동결된 도어록 각도 보정을 적용하지 않는다.",
+    "notes": "장치 포트는 사용자가 명시적으로 지정한다. BU04 두 대의 동시 운용은 미검증이며 최신 관측만 메모리에 유지한다. 모든 출력의 drive_authorized는 false이다."
+  }
+}

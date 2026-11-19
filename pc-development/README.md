@@ -1,0 +1,11 @@
+# PC 개발 구성
+
+이 폴더는 가져온 Pi 코드와 2초 PWM 응답 감시·가상 센서 잠금 수정본을 기준으로 만든 개발 사본이다. 현재 같은 시점의 Pi 배포 후보는 `../pi-runtime/`에 있다. 두 폴더는 자동 동기화되지 않으므로 개발·검증 후 변경 내용과 설정 제외 여부를 확인하고 Pi 사본을 갱신한다.
+
+주요 위치: `SmartCart-D5-v2/smartcart/`는 센싱·추적, `SmartCart_ManualDrive_180/smartcart/`는 가상 조종 및 시험, `SmartCart-D5-v2/components/c_key_core/`는 BU04 파서, `smartcart_ws/src/`는 LiDAR 드라이버다. `SOURCE-MANIFEST.json`은 구성 당시 해시다.
+
+현장 설정·인증서·로그·실측 자료와 기존 ROS 빌드 결과를 복사하지 않았다. Windows에서는 관련 Python·JavaScript 시험을 가상 출력으로 수행한다. ROS 빌드와 실제 Pi 장치 시험은 Ubuntu ARM64에서 별도로 확인해야 한다. 이 사본의 GPIO 출력은 안전 검수 전까지 잠겨 있다.
+
+2026-11-19에는 8765 센서 HTTP 조회를 병렬화해 각 표본의 기존 만료시간을 유지하면서 순차 조회 지연을 줄였다. `diagnose_pi.py`와 `check_pi.sh`는 빌드 준비·기존 센싱 상태를 읽기 전용으로 확인한다. Pi의 실제 통신 지연과 장치 데이터는 아직 미검증이다.
+
+`virtual-lab-18084/`는 기존 센싱 서버를 읽는 최신 18084 가상 화면과 JS 시험이다. 이 화면은 위의 가상 조종 후보와 별개로 유지하며 실제 모터를 제어하지 않는다. Pi에서 보고된 활성화 해제 문제의 원인은 아직 확인되지 않았다.

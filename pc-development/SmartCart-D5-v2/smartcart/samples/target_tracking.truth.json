@@ -1,0 +1,493 @@
+{
+  "schema": "smartcart.target_tracking_truth.v1",
+  "source": "synthetic",
+  "frame_id": "base_link",
+  "tag_height_base_link_m": 0.9,
+  "notes": "합성 원형 반사체이며 사람을 분류하지 않는다. 각 빔의 앞선 표면만 반사하고 태그는 몸통, 스캔은 하퇴 단면이라는 차이를 후보 오프셋으로 가정한다. 실물 정확도·추종·구동 수락 검수를 대신하지 않는다.",
+  "checkpoints": [
+    {
+      "label": "initial_confirm_1",
+      "event_index": 5,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "cached_scan_does_not_confirm",
+      "event_index": 8,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "initial_confirm_2",
+      "event_index": 11,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "unique_acquired",
+      "event_index": 14,
+      "expected_valid": true,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "unique_stable",
+      "event_index": 20,
+      "expected_valid": true,
+      "same_track_as": "unique_acquired",
+      "different_track_from": null,
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "short_occlusion",
+      "event_index": 26,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "short_recovery_confirm_1",
+      "event_index": 29,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "short_recovery_confirm_2",
+      "event_index": 32,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "short_recovery",
+      "event_index": 35,
+      "expected_valid": true,
+      "same_track_as": "unique_acquired",
+      "different_track_from": null,
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "two_candidates_ambiguous",
+      "event_index": 41,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": 2,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "crossing_recovery_confirm_1",
+      "event_index": 44,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "crossing_recovery_confirm_2",
+      "event_index": 47,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "crossing_recovery",
+      "event_index": 50,
+      "expected_valid": true,
+      "same_track_as": "short_recovery",
+      "different_track_from": null,
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "long_occlusion_lost",
+      "event_index": 80,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": true,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "long_recovery_confirm_1",
+      "event_index": 83,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "long_recovery_confirm_2",
+      "event_index": 86,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "long_recovery",
+      "event_index": 89,
+      "expected_valid": true,
+      "same_track_as": null,
+      "different_track_from": "crossing_recovery",
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "stray_cannot_steal_id",
+      "event_index": 92,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "stray_recovery_confirm_1",
+      "event_index": 95,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "stray_recovery_confirm_2",
+      "event_index": 98,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "stray_recovery",
+      "event_index": 101,
+      "expected_valid": true,
+      "same_track_as": "long_recovery",
+      "different_track_from": null,
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "wrong_tag_immediate",
+      "event_index": 103,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": true,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "wrong_tag_recovery_confirm_1",
+      "event_index": 107,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "wrong_tag_recovery_confirm_2",
+      "event_index": 110,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "wrong_tag_recovery",
+      "event_index": 113,
+      "expected_valid": true,
+      "same_track_as": null,
+      "different_track_from": "stray_recovery",
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "checksum_immediate",
+      "event_index": 115,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": true,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "checksum_recovery_confirm_1",
+      "event_index": 119,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "checksum_recovery_confirm_2",
+      "event_index": 122,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "checksum_recovery",
+      "event_index": 125,
+      "expected_valid": true,
+      "same_track_as": null,
+      "different_track_from": "wrong_tag_recovery",
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "uwb_disconnect_immediate",
+      "event_index": 126,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": true,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "uwb_reconnect_recovery_confirm_1",
+      "event_index": 130,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "uwb_reconnect_recovery_confirm_2",
+      "event_index": 133,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "uwb_reconnect_recovery",
+      "event_index": 136,
+      "expected_valid": true,
+      "same_track_as": null,
+      "different_track_from": "checksum_recovery",
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "lidar_disconnect_immediate",
+      "event_index": 137,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": true,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "lidar_reconnect_recovery_confirm_1",
+      "event_index": 141,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "lidar_reconnect_recovery_confirm_2",
+      "event_index": 144,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "lidar_reconnect_recovery",
+      "event_index": 147,
+      "expected_valid": true,
+      "same_track_as": null,
+      "different_track_from": "uwb_reconnect_recovery",
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    },
+    {
+      "label": "lidar_timeout",
+      "event_index": 165,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": true,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "lidar_timeout_recovery_confirm_1",
+      "event_index": 168,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "lidar_timeout_recovery_confirm_2",
+      "event_index": 171,
+      "expected_valid": false,
+      "same_track_as": null,
+      "different_track_from": null,
+      "candidate_min": null,
+      "track_id_null": false,
+      "expected_position_xy_m": null,
+      "max_target_error_m": null
+    },
+    {
+      "label": "lidar_timeout_recovery",
+      "event_index": 174,
+      "expected_valid": true,
+      "same_track_as": null,
+      "different_track_from": "lidar_reconnect_recovery",
+      "candidate_min": 1,
+      "track_id_null": false,
+      "expected_position_xy_m": [
+        2.8,
+        0.0
+      ],
+      "max_target_error_m": 0.25
+    }
+  ]
+}
