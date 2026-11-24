@@ -1,0 +1,18 @@
+/* Keep the existing radar layout; only add manual session/status elements. */
+.drive-session { display:grid; gap:8px; margin-top:4px; }
+.drive-session label { color:#a9bccb; font-size:10px; }
+.drive-session input { width:100%; min-height:36px; font-size:11px; }
+.drive-session-actions { display:flex; flex-wrap:wrap; gap:6px; }
+.drive-session-actions button { flex:1; padding:7px 8px; min-height:36px; font-size:11px; }
+.drive-session-actions #driveArm { background:#173e39; border-color:#427c72; }
+.drive-backend { margin:0; color:#96b7cf; font-size:10px; }
+.drive-backend[data-hardware="true"] { color:#ffd08a; }
+.axis-pad button.is-held { background:#2b526b; }
+.drive-speed { display:flex; justify-content:space-between; gap:8px; padding:7px 0; font-size:11px; }
+.drive-speed strong { font-size:16px; }
+.drive-estimate-note { margin:0; color:#99a8b5; font-size:10px; }
+@media (max-height:550px) and (orientation:landscape) {
+ .drive-session { gap:3px; } .drive-session input { min-height:28px; padding:5px; }
+ .drive-session-actions button { min-height:28px; padding:3px 5px; }
+ .drive-session label { font-size:9px; } .drive-speed { padding:2px 0; }
+}
