@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta name="source-sha256" content="caaa11c399497a590dd9c136efd346a3db52c63570ed654d5e1b9ffdd9691fc2">
+<meta name="source-sha256" content="eb8cd63458af521796dd84b08300e6ea5f5d790c3b1f8527c210243ea4bc63ed">
 <title>SmartCart Raspberry Pi 4 시연 운영 런북</title>
 <style>
 :root{color-scheme:light;--ink:#17283b;--muted:#52677c;--accent:#087d79;--line:#d9e3e9;--soft:#f1f6f8;--navy:#102b42;--code:#122b3d}
@@ -14,54 +14,31 @@
 <body>
 <a class="skip" href="#main">본문으로 이동</a>
 <header class="masthead" id="top"><div class="masthead-inner"><div class="brand">SMART CART · 운영 런북</div><div class="masthead-note">연결 · 설치 · 실행 · 점검</div></div></header>
-<div class="layout"><aside class="sidebar"><details class="toc-shell" open><summary>문서 목차</summary><nav aria-label="문서 목차"><a class="level-2" href="#실행-전-확인">실행 전 확인</a>
-<a class="level-2" href="#1-ssh-접속--windows-powershell">1. SSH 접속 — Windows PowerShell</a>
-<a class="level-2" href="#2-센싱--pi-터미널">2. 센싱 — Pi 터미널</a>
-<a class="level-2" href="#3-실제-조종-서버--pi-터미널">3. 실제 조종 서버 — Pi 터미널</a>
-<a class="level-2" href="#종료와-오류">종료와 오류</a></nav></details></aside><main id="main">
+<div class="layout"><aside class="sidebar"><details class="toc-shell" open><summary>문서 목차</summary><nav aria-label="문서 목차"><a class="level-2" href="#1-ssh-접속">1. SSH 접속</a>
+<a class="level-2" href="#2-센싱-확인">2. 센싱 확인</a>
+<a class="level-2" href="#3-조종-서버">3. 조종 서버</a></nav></details></aside><main id="main">
 <h1 id="smartcart-raspberry-pi-4-시연-운영-런북">SmartCart Raspberry Pi 4 시연 운영 런북</h1>
-<p>Pi 4 · Ubuntu 22.04 ARM64 · ROS 2 Humble · C1 LiDAR · 단일 BU04 · BU03 태그</p>
-<p>기본 순서는 <strong>SSH 접속 → LiDAR·BU04 센싱 → 실제 조종 서버</strong>다. 아래 Windows 명령은 PC PowerShell에서, 그 밖의 명령은 SSH 접속 후 Pi 터미널에서 실행한다.</p>
-<h2 id="실행-전-확인">실행 전 확인</h2>
-<p><strong><code>real.sh</code>는 실제 GPIO 서버를 시작한다.</strong> 센서 오류·ID 불일치·시간 초과 시 구동 잠금, 2초 PWM 응답 감시, 비상정지와 모터 전진 극성·정지 조건을 확인하기 전에는 실제 주행을 보류한다. PWM 표시는 바퀴 회전이나 물리 전원 차단의 증거가 아니다. 현재 비상정지의 Pi GPIO 피드백과 엔코더는 없다.</p>
-<p>최근 Pi 센서 조회에서 LiDAR 720개 중 무효 빔 77~80개가 관측됐다. 전방 미관측 영역과 센서 이상 시 정지·재활성화 동작을 검수해야 한다. 현재 Pi의 추종 코드 일부는 추출 ZIP 및 GitHub 검토본과 달라 안전 잠금 적용 여부가 확인되지 않았다. <strong>이 검수가 끝나기 전에는 아래 실제 서버 실행도 보류한다.</strong></p>
-<p>GitHub <code>main</code>의 <code>pi-runtime/pi-field-snapshot/</code>은 GPIO를 잠근 검토본이며 Pi에 자동 적용되지 않는다. 시험용 설정을 실제 설정으로 복사하거나 안전 잠금을 우회하지 않는다. 장치 설정 변경 전 BU03/BU04 AT 백업을 보존한다.</p>
-<h2 id="1-ssh-접속--windows-powershell">1. SSH 접속 — Windows PowerShell</h2>
-<p>현재 Pi 주소가 <code>192.168.43.212</code>인 경우:</p>
+<p>Pi 4 · Ubuntu 22.04 · ROS 2 Humble · C1 LiDAR · BU04 · BU03 태그</p>
+<h2 id="1-ssh-접속">1. SSH 접속</h2>
+<p>Windows PowerShell에서 Pi에 접속한다. 핫스팟이 바뀌면 Pi에서 <code>hostname -I</code>로 확인한 주소를 사용한다.</p>
 <div class="code-block"><div class="code-toolbar"><span>PowerShell</span><button type="button" class="copy-btn" data-code="code-1" aria-label="PowerShell 코드 복사">복사</button></div><pre tabindex="0"><code id="code-1" class="language-powershell">ssh capstone@192.168.43.212
 </code></pre></div>
-<p>접속 후 <code>capstone@SUDO:~$</code>처럼 Pi 프롬프트가 표시되는지 확인한다. 주소가 바뀌었다면 Pi에서 <code>hostname -I</code>로 확인한 현재 주소를 사용한다.</p>
-<h2 id="2-센싱--pi-터미널">2. 센싱 — Pi 터미널</h2>
-<p>LiDAR와 BU04를 Pi에 연결하고 BU03의 전원을 켠다. 센싱이 이미 실행 중인지 확인한다.</p>
-<div class="code-block"><div class="code-toolbar"><span>Bash</span><button type="button" class="copy-btn" data-code="code-2" aria-label="Bash 코드 복사">복사</button></div><pre tabindex="0"><code id="code-2" class="language-bash">curl -fsS --max-time 2 http://127.0.0.1:8765/api/health | python3 -m json.tool
+<h2 id="2-센싱-확인">2. 센싱 확인</h2>
+<p>이후 명령은 Pi SSH 터미널에서 실행한다. LiDAR와 BU04를 연결하고 BU03의 전원을 켠 뒤 센싱 상태를 확인한다.</p>
+<div class="code-block"><div class="code-toolbar"><span>Bash</span><button type="button" class="copy-btn" data-code="code-2" aria-label="Bash 코드 복사">복사</button></div><pre tabindex="0"><code id="code-2" class="language-bash">curl -fsS --max-time 2 http://127.0.0.1:8765/api/health
 </code></pre></div>
-<p>응답이 오면 중복 시작하지 않는다. HTTP 응답이나 <code>lidar_valid</code>만으로 모든 방향의 빔과 실제 장애물 정지가 검증되는 것은 아니다. BU04 측정 유효·ID 일치, LiDAR 갱신·무효 빔 및 장착 방향을 확인한다.</p>
-<p>응답이 없으면 먼저 포트와 잠금 보유자를 확인한다.</p>
-<div class="code-block"><div class="code-toolbar"><span>Bash</span><button type="button" class="copy-btn" data-code="code-3" aria-label="Bash 코드 복사">복사</button></div><pre tabindex="0"><code id="code-3" class="language-bash">ss -ltnp '( sport = :8765 )'
-fuser -v /tmp/smartcart-runner-*/live.lock /tmp/smartcart-runner-*/8765.lock
+<p>응답이 오면 기존 서버를 사용한다. 응답이 없으면 <code>ss -ltnp '( sport = :8765 )'</code>로 포트를 확인한다. 기존 실행기나 잠금 보유자가 없고 Pi에 <code>sensors.sh</code>가 있는 경우에만 시작한다.</p>
+<div class="code-block"><div class="code-toolbar"><span>Bash</span><button type="button" class="copy-btn" data-code="code-3" aria-label="Bash 코드 복사">복사</button></div><pre tabindex="0"><code id="code-3" class="language-bash">cd "$HOME/smartcart" &amp;&amp; bash sensors.sh
 </code></pre></div>
-<p>기존 센싱 실행기와 잠금 보유자가 없을 때만 다음을 실행한다.</p>
-<div class="code-block"><div class="code-toolbar"><span>Bash</span><button type="button" class="copy-btn" data-code="code-4" aria-label="Bash 코드 복사">복사</button></div><pre tabindex="0"><code id="code-4" class="language-bash">cd "$HOME/smartcart"
-bash sensors.sh
+<p>잠금 오류가 나면 소유 프로세스를 확인한다. HTTP 응답과 별도로 LiDAR 갱신·미관측 구간과 BU04 측정 유효·ID 일치를 확인한다.</p>
+<h2 id="3-조종-서버">3. 조종 서버</h2>
+<p><strong><code>real.sh</code>는 실제 GPIO를 사용한다.</strong> 센서 이상·ID 불일치·시간 초과 시 정지 및 재활성화 조건, 2초 PWM 응답 감시, 비상정지와 모터 극성을 현장에서 확인하기 전까지 실행을 보류한다. Pi의 추종 코드 일부는 GitHub 검토본과 달라 해당 잠금의 적용 여부가 확인되지 않았다.</p>
+<p>안전 검수를 마친 뒤 <code>ss -ltnp '( sport = :8081 )'</code>로 기존 서버가 없는지 확인하고, 별도 Pi SSH 터미널에서 실행한다.</p>
+<div class="code-block"><div class="code-toolbar"><span>Bash</span><button type="button" class="copy-btn" data-code="code-4" aria-label="Bash 코드 복사">복사</button></div><pre tabindex="0"><code id="code-4" class="language-bash">cd "$HOME/smartcart" &amp;&amp; bash real.sh
 </code></pre></div>
-<p><code>sensors.sh</code>는 추출본 기준으로 기존 센싱을 확인하고 없을 때 단일 BU04 센싱을 시작한다. Pi의 현재 파일이 동일한지는 별도 확인이 필요하다. 터미널을 열어 두며 기존 수집기와 중복 실행하지 않는다. 잠금 오류가 나면 소유 프로세스를 확인하고 잠금 파일을 임의로 삭제하지 않는다.</p>
-<h2 id="3-실제-조종-서버--pi-터미널">3. 실제 조종 서버 — Pi 터미널</h2>
-<p>사용자는 Pi에서 <code>bash real.sh</code>로 서버를 실행하고 <code>https://192.168.43.212:8081/</code>에 접속할 수 있다고 보고했다. 화면 연결만으로 실제 주행의 안전성을 확인할 수는 없다.</p>
-<p><strong>위 안전 검수가 완료된 경우에만</strong>, 별도 SSH 터미널에서 기존 조종 서버가 없는지 확인한 뒤 실행한다. 현재는 검수 전이므로 실행을 보류한다.</p>
-<div class="code-block"><div class="code-toolbar"><span>Bash</span><button type="button" class="copy-btn" data-code="code-5" aria-label="Bash 코드 복사">복사</button></div><pre tabindex="0"><code id="code-5" class="language-bash">ss -ltnp '( sport = :8081 )'
-</code></pre></div>
-<p>8081이 사용 중이지 않고 안전 검수가 완료된 경우 실행한다.</p>
-<div class="code-block"><div class="code-toolbar"><span>Bash</span><button type="button" class="copy-btn" data-code="code-6" aria-label="Bash 코드 복사">복사</button></div><pre tabindex="0"><code id="code-6" class="language-bash">cd "$HOME/smartcart"
-bash real.sh
-</code></pre></div>
-<p>8081이 사용 중이면 서버를 중복 실행하지 않는다. 서버가 출력한 현재 HTTPS 주소·접속키를 확인하고 같은 핫스팟의 PC나 휴대폰에서 접속한다. 인증서가 현재 IP에 맞는지 확인하고 TLS 경고를 우회하지 않는다. 접속키와 개인키는 공유하지 않는다.</p>
-<p>추출 당시 <code>virtual.sh</code>도 기본 GPIO를 선택했다. 이름만 보고 가상 출력으로 판단하지 않는다.</p>
-<h2 id="종료와-오류">종료와 오류</h2>
-<ul>
-<li><p>조종 중 정지가 필요하면 비상정지 수단을 사용한다. 직접 시작한 서버는 해당 터미널에서 <code>Ctrl+C</code>로 종료하고, 센싱도 직접 시작했다면 해당 터미널에서 별도로 종료한다.</p></li>
-<li><p>센서 이상, 무효·미관측 빔, 2초 응답 미확인 또는 비상정지 이상 시 구동을 중단하고 모터 전원을 차단한다.</p></li>
-<li><p>Pi의 장치 설정·센서 보정·모터 배선은 이 런북 갱신으로 변경되지 않는다.</p></li>
-</ul>
+<p>주소를 생략하면 서버가 사설 IPv4를 선택한다. <code>RFC1918 private IPv4 required</code>가 나오면 <code>0.0.0.0</code> 대신 Pi에 할당된 주소를 사용한다. 현재 주소가 <code>192.168.43.212</code>라면 같은 디렉토리에서 <code>bash real.sh 192.168.43.212</code>로 지정할 수 있다.</p>
+<p>같은 핫스팟의 PC나 휴대폰에서 서버가 출력한 HTTPS 주소로 접속한다. 현재 주소 예시는 <code>https://192.168.43.212:8081/</code>이다. 인증서 경고가 나오면 주소와 인증서 신뢰 설정을 확인한다.</p>
+<p>센서·응답·비상정지에 이상이 있으면 구동을 중단하고 모터 전원을 차단한다. 직접 시작한 서버는 해당 터미널에서 <code>Ctrl+C</code>로 종료한다.</p>
 </main></div><footer class="page-footer"><span>Markdown 원본과 같은 내용을 담은 독립 HTML · 외부 자산 없음</span><a href="#top">맨 위로</a></footer><span class="sr-only" id="copy-status" aria-live="polite"></span>
 <script>
 (() => {
