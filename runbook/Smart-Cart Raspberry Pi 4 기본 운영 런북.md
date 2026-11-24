@@ -8,6 +8,8 @@ Pi 4 · Ubuntu 22.04 ARM64 · ROS 2 Humble · C1 LiDAR · BU04 · BU03 태그
 
 **실제 조종 서버는 현장 안전 검수와 적용 버전 확인 후에만 시작한다.** 기존 Pi 설치본에 LiDAR·UWB 이상 잠금과 2초 PWM 응답 감시가 적용됐다는 증거는 아직 없다. 제공된 기존 수동 코드의 상태에는 `sensor_interlock=false`가 표시된다. 이 확인이 끝나지 않았다면 3단계 서버 실행은 보류한다. 센서 무효·ID 불일치·시간 초과 잠금과 비상정지를 우회하지 않는다.
 
+2026-11-24 사용자가 Pi에서 확인한 `follow_config.json`의 `age_limit_s`와 `pwm_cap`은 GitHub 검토본의 상한(각각 0.20초, 30)보다 컸다. `lidar_enabled`는 재검사에서 `true`였으나 앞선 결과와 달랐다. 서버 시작 시 읽힌 값과 센서 이상 시 실제 정지·재시작 조건은 확인되지 않았다. 설정이나 AT 백업을 임의로 바꾸지 않는다.
+
 전진 극성, 독립 모터 전원 차단, 정지 및 재시작 조건은 실물 확인이 필요하다. 비상정지는 모터 전원만 차단하며 Pi GPIO 피드백이 없고, 엔코더도 없다. PWM 표시나 센서 HTTP 응답은 실제 바퀴 움직임·안전성의 증거가 아니다. BU03/BU04 설정을 바꾸기 전에는 AT 설정 백업을 보존한다.
 
 ## 1. SSH 접속
@@ -86,18 +88,18 @@ LiDAR의 지속적인 갱신과 무효 빔, BU04 측정 유효·ID 일치, 단�
 
 ## 3. 실제 조종 서버
 
-기존 Pi 서버의 설치 경로와 적용 버전을 확인한다. 제공받은 원본은 `~/smartcart/manual.sh`가 `8081`에서 실제 GPIO 서버를 실행하는 형태이지만, **현재 Pi 파일과 동일한지 확인하지 못했다**. 다음은 읽기 전용 확인이다.
+기존 Pi 서버의 설치 경로와 적용 버전을 확인한다. 2026-11-24에는 사용자가 `~/smartcart/releases/real-uwb-v1/server.py`의 GPIO 실행을 확인했고, 나중에 확인한 조종 포트는 수신 중이 아니었다. 이는 당시 관측이며 현재 상태나 무장·센서 잠금 상태를 뜻하지 않는다. 제공받은 이전 원본에는 `~/smartcart/manual.sh`를 사용하는 별도 수동 서버도 있다. 다음은 읽기 전용 확인이다.
 
 ```bash
-ss -ltnp '( sport = :8081 )'
-ps -ww -eo pid,ppid,args | grep -E '[d]rive.py|[m]anual.sh'
+ss -ltnp '( sport = :8080 or sport = :8081 or sport = :18084 )'
+ps -ww -eo pid,ppid,args | grep -E '[r]eal-uwb-v1/server.py|[d]rive.py|[m]anual.sh'
 sha256sum "$HOME/smartcart/manual.sh" \
   "$HOME/smartcart/SmartCart_ManualDrive_180/smartcart/drive.py" \
   "$HOME/smartcart/SmartCart_ManualDrive_180/smartcart/smartcart_motor/manual_remote.py" \
   "$HOME/smartcart/SmartCart_ManualDrive_180/smartcart/web/js/manual_controls.js"
 ```
 
-이미 8081이 사용 중이면 어떤 서버인지 확인하고 중복 실행하지 않는다. 해시는 버전 비교용이며 일치만으로 안전 검수를 대신하지 않는다. 제공받은 원본 `manual_remote.py`의 SHA-256은 `06a0a6f9a1da04d37dd895f65135850262fc1752fecb7303f85092e244f1c276`이며, 그 원본 자체에는 센서 자동 잠금이 연결돼 있지 않다. 이를 검증된 통합 서버로 취급하지 않는다.
+조종 포트가 사용 중이면 어떤 서버인지 확인하고 중복 실행하지 않는다. 프로세스 목록이나 터미널 출력에 접속키가 포함된 경우 공유하지 않는다. 해시는 버전 비교용이며 일치만으로 안전 검수를 대신하지 않는다. 제공받은 이전 수동 원본 `manual_remote.py`의 SHA-256은 `06a0a6f9a1da04d37dd895f65135850262fc1752fecb7303f85092e244f1c276`이며, 그 원본 자체에는 센서 자동 잠금이 연결돼 있지 않다. 이를 검증된 통합 서버로 취급하지 않는다.
 
 기존 Pi 실제 서버의 실행 형식은 다음과 같다. **위 안전 조건, 실제 설치 경로·버전 및 센서 이상 잠금·2초 응답 감시가 확인된 경우에만** 별도 Pi SSH 터미널에서 실행한다. 현재는 이 조건이 미확인이므로 시연 구동을 보류한다.
 
@@ -107,7 +109,9 @@ bash "$HOME/smartcart/manual.sh" 192.168.43.212
 
 서버가 시작되면 출력된 HTTPS 주소와 연결키를 해당 실행 터미널에서 확인하고, 같은 사설망의 브라우저에서 접속한다. 이전 주소 예시는 `https://192.168.43.212:8081/`이다. TLS 인증서는 해당 IP와 단말의 CA 신뢰를 확인하며 경고를 우회하지 않는다. 접속키나 개인키를 채팅에 공유하지 않는다.
 
-이 기존 서버에서 LiDAR·BU04가 화면에 보이는 것과 실제 자동 추종·장애물 회피가 동작하는 것은 다르다. 전달받은 UWB 추종 코드는 초안 PR로 남아 있으며 의존 파일과 안전 검증이 부족해 현재 실행 대상으로 쓰지 않는다.
+이 기존 서버에서 LiDAR·BU04가 화면에 보이는 것과 실제 자동 추종·장애물 회피가 동작하는 것은 다르다. Pi에서 추출한 UWB 추종·LiDAR 처리 코드는 GitHub `main`의 `pi-runtime/pi-field-snapshot/`에 병합됐다. 이 경로는 안전 검토본으로 실제 GPIO를 잠그며, 장치 설정도 포함하지 않으므로 Pi의 운행용 설치본이 아니다. GitHub 병합은 기존 Pi 코드를 변경하지 않는다.
+
+추출 당시 `real.sh`와 `virtual.sh`는 모두 기본 GPIO를 선택하도록 돼 있었다. 파일 이름만으로 가상 출력이라고 판단하지 말고 Pi의 실제 파일·서버 상태를 확인한다. 시험용 합성 설정을 실제 설정으로 복사하거나 안전 잠금을 해제하지 않는다.
 
 ## 종료와 오류
 
