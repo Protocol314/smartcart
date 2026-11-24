@@ -21,10 +21,14 @@ class ZoneGuard(LidarGuard):
     def __init__(self,config):
         super().__init__(config)
         root=Path(__file__).parent
-        self.geometry=json.loads((root/'live_zone_modules/cart_geometry.json').read_text(encoding='utf-8'))
+        try:
+            self.geometry=json.loads((root/'live_zone_modules/cart_geometry.json').read_text(encoding='utf-8'))
+        except (OSError, ValueError) as error:
+            raise ValueError('차체 형상 설정이 없거나 유효하지 않습니다: cart_geometry.json') from error
         g=self.geometry
-        keys=('front_extent_m','rear_extent_m','width_m','lidar_x_m','lidar_y_m')
-        if (g.get('reference')!='front_track_midpoint' or not all(type(g.get(k)) in (int,float)
+        keys=('front_extent_m','rear_extent_m','width_m','lidar_x_m','lidar_y_m','uwb_x_m','uwb_y_m')
+        if (not isinstance(g,dict) or g.get('synthetic_test_only') is not None
+                or g.get('reference')!='front_track_midpoint' or not all(type(g.get(k)) in (int,float)
                 and math.isfinite(g[k]) for k in keys)
                 or min(g['front_extent_m'],g['rear_extent_m'],g['width_m'])<=0):
             raise ValueError('reactive_geometry_invalid')
@@ -108,6 +112,10 @@ class ZoneGuard(LidarGuard):
         if forward or turn:
             if not valid:
                 self.fail("reactive_front_no_valid_scan")
+            if self.unknown:
+                self.fail("reactive_front_unknown_scan")
+            if turn and any(r is None for _,r in scene.rays):
+                self.fail("reactive_rotation_unknown_scan")
 
             if min(valid) <= 1.0:
                 self._front_block_seq = self.current.sequence

@@ -27,6 +27,8 @@ class ReportingBackend:
 
 class DriveBridge:
     def __init__(self, drive, reporter, config, clock=time.monotonic):
+        if getattr(reporter.backend, 'hardware', None) is not False:
+            raise ValueError('현장 안전 검수 전 실제 GPIO 출력 잠금')
         self.drive,self.reporter,self.config,self.clock=drive,reporter,config,clock
         self.feed=UwbFeed(config)
         self.follower=Follower(config)
@@ -73,7 +75,7 @@ class DriveBridge:
             'outlier_count':self.feed.outlier_count,'last_outlier':self.feed.last_outlier,
         }
         state['lidar_guard']=self.lidar.snapshot(self.clock()) if self.lidar else {'enabled':False}
-        state['sensor_interlock']=bool(self.enabled and self.lidar)
+        state['sensor_interlock']=False
         return state
 
     def release(self,owner):
@@ -82,28 +84,12 @@ class DriveBridge:
         self.drive.release(owner)
 
     def pause_output(self,reason):
-        """Brake without extending the command watchdog or revoking session arming."""
-        was_paused=self.paused
-        self.paused=True
-        self.reason=str(reason)
-        self.axes=(0.,0.)
-        self.follower.reset()
+        """센서 이상 시 정지하고 재활성화를 요구한다."""
         now=self.clock()
         with self.drive.lock:
-            if not self.drive.armed:
-                return
-            if was_paused and not (self.drive.forward or self.drive.turn or any(self.drive.output)):
-                return
-            self.drive.forward=self.drive.turn=0.
-            self.drive.ramp.stop(now)
-            self.drive.output=(0,0)
-            try:
-                self.drive.backend.stop()
-            except Exception as error:
-                self.drive.fault=str(error)
-                self.drive._stop('gpio_fault',now)
-                self.reset_mode('gpio_fault')
-                print('UWB_AUTO_STOP: gpio_fault',flush=True)
+            if self.drive.armed:
+                self.drive._stop(str(reason),now)
+        self.reset_mode(str(reason))
 
     def monitor_sensor(self):
         if not self.enabled:
@@ -147,13 +133,8 @@ class DriveBridge:
                 if scale<1:reason='lidar_slowdown'
                 paused=False
             except ValueError as error:
-                # Fresh authenticated heartbeats keep arming alive, but an invalid
-                # target can only produce neutral output. No heartbeat is forged.
                 self.pause_output(str(error))
-                forward=turn=0.
-                reason=str(error)
-                paused=True
-                scale=0.
+                raise
             command=dict(data,type='drive',forward=forward,turn=turn,pwm=min(pwm,self.config.pwm_cap,self.lidar.output_pwm_cap() if self.lidar else self.config.pwm_cap)*scale)
             # Original owner/epoch/sequence/stamp validation remains in force.
             # DROP_LATE_AUTO_PACKET_V1
@@ -191,7 +172,8 @@ class DriveBridge:
         except Exception as error:
             self.reset_mode(str(error))
             print('UWB_AUTO_STOP:', str(error), flush=True)
-            self.drive.command(owner,{'type':'stop'})
+            if self.drive.snapshot()['armed']:
+                self.drive.command(owner,{'type':'stop'})
             raise ValueError(str(error)) from None
 
 def attach(app, reporter, config):
@@ -239,8 +221,10 @@ def attach(app, reporter, config):
                     pending_frame=(frame_generation,data,started,time.monotonic(),None)
                 except Exception as error:
                     frame_generation += 1
-                    pending_frame=(frame_generation,None,started,time.monotonic(),
-                                   'lidar_http_'+type(error).__name__)
+                    reason='lidar_http_'+type(error).__name__
+                    bridge.lidar.invalidate(reason)
+                    bridge.monitor_sensor()
+                    pending_frame=(frame_generation,None,started,time.monotonic(),reason)
                 await asyncio.sleep(.03)
 
         def decode_frame(working,packet):
@@ -249,7 +233,6 @@ def attach(app, reporter, config):
             else:working.accept(data,started,received)
             return working
 
-        # LIDAR_HOLD_LAST_VALID_V1
         async def decode_latest():
             seen=-1
             last_key=None
@@ -264,8 +247,8 @@ def attach(app, reporter, config):
                     await asyncio.sleep(.005)
                     continue
                 seen=packet[0]
-                # HTTP 요청 실패 시 마지막 스캔과 원래 만료 시각을 보관한다.
                 if packet[4] is not None:
+                    bridge.lidar.invalidate(packet[4])
                     bridge.monitor_sensor()
                     continue
                 working=copy.copy(bridge.lidar)

@@ -1,0 +1,10 @@
+{
+  "synthetic_test_only": true,
+  "stop_distance_m": 2.0,
+  "start_distance_m": 2.25,
+  "age_limit_s": 0.2,
+  "pwm_cap": 30,
+  "angle_sign": -1,
+  "lidar_enabled": true,
+  "lidar_yaw_deg": 0.0
+}

@@ -1,12 +1,15 @@
 import asyncio
 import hashlib
 import importlib.util
+import json
+import math
 from pathlib import Path
 import shutil
 import ssl
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import os
 
 if sys.platform=='win32':
@@ -15,8 +18,9 @@ if sys.platform=='win32':
 HERE=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(HERE))
 from certificates import private_ip,prepare,verified
-from uwb_control import Config
+from uwb_control import Config, VERSION
 import server as release_server
+import zone_live
 from aiohttp import CookieJar,Fingerprint,web
 from aiohttp.test_utils import TestClient,TestServer
 
@@ -41,6 +45,7 @@ class CertificatesTests(unittest.TestCase):
             self.assertTrue(verified(second,'192.168.137.90'))
             self.assertFalse(verified(first,'192.168.137.90'))
 
+@unittest.skipUnless(shutil.which('openssl'),'openssl required')
 class HttpsIntegrationTests(unittest.IsolatedAsyncioTestCase):
     async def test_login_websocket_auto_and_stop(self):
         if not shutil.which('openssl'):self.skipTest('openssl required')
@@ -51,6 +56,13 @@ class HttpsIntegrationTests(unittest.IsolatedAsyncioTestCase):
         base=release_server.load_base()
         backend=base.MockBackend()
         with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            geometry=json.loads((HERE/'tests/fixtures/cart_geometry.synthetic.json').read_text(encoding='utf-8'))
+            geometry.pop('synthetic_test_only')
+            (root/'live_zone_modules').mkdir()
+            (root/'live_zone_modules/cart_geometry.json').write_text(json.dumps(geometry),encoding='utf-8')
+            geometry_patch=patch.object(zone_live,'Path',return_value=root/'zone_live.py')
+            geometry_patch.start();self.addCleanup(geometry_patch.stop)
             cert,_=prepare(Path(temporary),'172.20.10.4')
             tls=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
             tls.load_cert_chain(cert/'server.crt',cert/'server.key')
@@ -62,7 +74,18 @@ class HttpsIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 return web.json_response({'source_mode':'live','profile':'single_left','state':'running','remaining_ms':500,
                     'sensors':{'uwb_left':{'connected':True,'valid':True,'measurement_valid':True,'id_valid':True,
                     'sample_sequence':sequence,'range_m':3.,'raw_angle_deg':0,'age_ms':0,'remaining_ms':500}}})
+            async def lidar(request):
+                nonlocal scan_sequence
+                scan_sequence+=1
+                step=2*math.pi/360
+                return web.json_response({'source_mode':'ros','state':'live','error':None,'age_ms':0,'stale_after_ms':500,
+                    'scan':{'sequence':scan_sequence,'source':{'kind':'ros'},'truncated':False,
+                    'ranges':[5.]*360,'angle_min':-math.pi,'angle_max':-math.pi+359*step,
+                    'angle_increment':step,'range_min':.05,'range_max':8.,'scan_time':.1,'time_increment':0.,
+                    'header':{'frame_id':'test','stamp':{'sec':scan_sequence,'nanosec':0}}}})
+            scan_sequence=0
             sensor_app=web.Application();sensor_app.router.add_get('/api/dual-uwb',sensor)
+            sensor_app.router.add_get('/api/frame',lidar)
             sensor_server=TestServer(sensor_app)
             await sensor_server.start_server()
             app=release_server.build_app(base,Config(),backend,'4321','172.20.10.4','1212')
@@ -87,7 +110,7 @@ class HttpsIntegrationTests(unittest.IsolatedAsyncioTestCase):
                 await ws.send_json({'key':'4321'})
                 state=await asyncio.wait_for(ws.receive_json(),1)
                 self.assertFalse(state['armed'])
-                self.assertEqual(state['controller_version'],'1.0.0')
+                self.assertEqual(state['controller_version'],VERSION)
                 await ws.send_json(dict(type='arm',seq=1,epoch=state['epoch'],stamp=state['stamp'],forward=0,turn=0,pwm=50))
                 for _ in range(8):
                     state=await asyncio.wait_for(ws.receive_json(),1)

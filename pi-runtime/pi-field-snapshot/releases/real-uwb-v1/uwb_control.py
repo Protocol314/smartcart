@@ -36,8 +36,8 @@ class Config:
     def __post_init__(self):
         number(self.stop_distance_m,.8,3.)
         number(self.start_distance_m,self.stop_distance_m+.1,4.)
-        number(self.age_limit_s,.05,.35)  # UWB_CONTINUITY_035
-        number(self.pwm_cap,0,180)
+        number(self.age_limit_s,.05,.20)
+        number(self.pwm_cap,0,30)
         if type(self.angle_sign) is not int or self.angle_sign not in (-1,1):
             raise ValueError('invalid_angle_sign')
         number(self.angle_offset_deg,-180,180)
@@ -49,7 +49,7 @@ class Config:
             raise ValueError('invalid_confirmation_count')
         if type(self.auto_turn_sign) is not int or self.auto_turn_sign not in (-1,1):
             raise ValueError('invalid_auto_turn_sign')
-        if type(self.lidar_enabled) is not bool:
+        if self.lidar_enabled is not True:
             raise ValueError('invalid_lidar_enabled')
         number(self.lidar_yaw_deg,-180,180)
         number(self.lidar_age_limit_s,.10,.50)
@@ -78,27 +78,13 @@ class UwbFeed:
         self.last_outlier=None
 
     def invalidate(self, reason):
-        import time
-        reason = str(reason)
-        trusted = getattr(self, '_trusted_target', None)
-        soft = (reason in ('invalid_numeric_input', 'confirming_uwb')
-                or reason.startswith('uwb_http_'))
-        if soft and trusted is not None and time.monotonic() < trusted.deadline:
-            self.current = trusted
-            self.confirmations = self.config.confirmation_samples
-            self.reason = 'uwb_holding_last_valid'
-            return
         self.current = None
-        self._trusted_target = None
         self.confirmations = 0
-        self.reason = reason
+        self.reason = str(reason)
 
     def discard_outlier(self,now):
-        # Rejected coordinates cannot become a target or renew an older target.
-        if self.current is None or now>=self.current.deadline:
-            self.invalidate('uwb_stale_after_outlier')
-        else:
-            self.reason='uwb_outlier_ignored'
+        # 이상 측정 뒤 이전 위치로 주행을 계속하지 않는다.
+        self.invalidate('uwb_position_jump')
 
     def accept(self, payload, started, now):
         try:
@@ -168,17 +154,13 @@ class UwbFeed:
             self.invalidate(str(error))
 
     def require(self, now):
-        trusted = getattr(self, '_trusted_target', None)
         if self.current is None:
             raise ValueError(self.reason)
         if now >= self.current.deadline:
             self.invalidate('uwb_stale')
             raise ValueError(self.reason)
         if self.confirmations < self.config.confirmation_samples:
-            if trusted is not None and now < trusted.deadline:
-                return trusted
             raise ValueError('confirming_uwb')
-        self._trusted_target = self.current
         return self.current
 
 

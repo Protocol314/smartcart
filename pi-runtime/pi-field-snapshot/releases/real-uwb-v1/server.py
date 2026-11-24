@@ -39,6 +39,8 @@ def load_login():
     return namespace
 
 def build_app(base,config,backend,pin,address,password,start_worker=True):
+    if getattr(backend,'hardware',None) is not False:
+        raise ValueError('현장 안전 검수 전 실제 GPIO 출력 잠금')
     base.ROOT=HERE/'web'
     reporter=ReportingBackend(backend)
     app=base.make_app(reporter,key=pin,sensor_url='http://127.0.0.1:8765',start_worker=start_worker)
@@ -52,13 +54,18 @@ def main():
     parser.add_argument('--address')
     parser.add_argument('--backend',choices=('gpio','mock'),default='gpio')
     args=parser.parse_args()
+    if args.backend != 'mock':
+        raise SystemExit('현장 안전 검수 전 실제 GPIO 출력 잠금: 이 검토본은 mock 시험만 허용합니다.')
     address=private_ip(args.address) if args.address else choose_address()
     with socket.socket() as probe:
         if sys.platform=='linux':probe.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
         try:probe.bind((address,8081))
         except OSError as error:
             raise SystemExit('8081 unavailable: stop the previous server in its own terminal or check this Pi IP. '+str(error)) from None
-    config=Config(**json.loads((HERE/'follow_config.json').read_text()))
+    try:
+        config=Config(**json.loads((HERE/'follow_config.json').read_text(encoding='utf-8')))
+    except (OSError, ValueError, TypeError) as error:
+        raise SystemExit('follow_config.json이 없거나 유효하지 않습니다. 실제 설정은 별도 보존하고 시험용 값으로 대체하지 마세요.') from error
     print('Automatic turn sign:',config.auto_turn_sign,'/ LiDAR yaw:',config.lidar_yaw_deg,flush=True)
     base=load_base()
     if args.backend=='gpio':
