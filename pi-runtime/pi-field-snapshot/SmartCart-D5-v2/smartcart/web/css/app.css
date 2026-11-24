@@ -1,0 +1,184 @@
+/* No framework, webfont, textures or external assets. Accent colors live only in the radar renderer. */
+:root { color-scheme: dark; --bg:#000; --text:#f3f3f3; --muted:#aeaeae; --line:#282828; --soft:#171717; --mono:ui-monospace,"Cascadia Code","SFMono-Regular",Consolas,"Liberation Mono","Malgun Gothic",monospace; }
+* { box-sizing:border-box; }
+[hidden] { display:none !important; }
+html { background:var(--bg); }
+body { margin:0; min-width:280px; background:var(--bg); color:var(--text); font:14px/1.5 var(--mono); font-variant-numeric:tabular-nums; }
+button,input,select { font:inherit; color:var(--text); }
+button,select { min-height:42px; cursor:pointer; }
+button { border:1px solid var(--line); background:#000; padding:8px 14px; border-radius:4px; }
+button:hover:not(:disabled) { border-color:#8c8c8c; background:#101010; }
+button:disabled { cursor:default; opacity:.35; }
+:focus-visible { outline:2px solid #fff; outline-offset:3px; }
+select { background:#000; border:1px solid transparent; border-radius:3px; padding:4px 5px; max-width:100%; }
+select:hover,select:focus-visible { border-color:var(--line); }
+input { min-width:0; background:#080808; border:1px solid #444; border-radius:3px; padding:10px; }
+input[type="checkbox"],input[type="range"] { accent-color:#fff; }
+a { color:inherit; text-decoration:none; }
+.header { min-height:76px; padding:14px clamp(16px,2.5vw,40px); border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.brand { display:flex; align-items:center; gap:13px; min-width:0; }
+h1 { margin:0; font:600 25px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif; white-space:nowrap; letter-spacing:-.7px; }
+h1 span { margin-left:12px; font:400 14px/1.2 var(--mono); letter-spacing:4px; }
+.connection { display:flex; align-items:center; gap:9px; font-size:12px; letter-spacing:1.3px; white-space:nowrap; }
+.status-dot { width:6px; height:6px; border:1px solid #fff; border-radius:50%; flex-shrink:0; }
+.connection[data-active="true"] .status-dot { background:#fff; }
+.workspace { width:100%; max-width:1720px; margin:0 auto; padding:24px clamp(16px,2.5vw,40px); display:grid; grid-template-columns:minmax(0,1fr) minmax(290px,340px); gap:clamp(22px,3vw,48px); align-items:center; }
+.radar-panel { min-width:0; }
+.radar-stage { position:relative; width:min(100%,calc(100svh - 212px)); max-width:920px; margin:auto; aspect-ratio:1; }
+.radar-stage canvas { position:absolute; inset:0; width:100%; height:100%; display:block; }
+#radar { touch-action:pan-y; outline-offset:-3px; }
+#radarUwb { pointer-events:none; }
+#radarTracking { pointer-events:none; }
+.tracking-panel { border-color:#46404e; }
+.tracking-readonly { margin:12px 0 0; font-size:11px; color:#dec9f5; }
+.tracking-legend { color:#cabfd8; }
+.tracking-panel[data-state="tracking"] { border-color:#bfa3d9; }
+.tracking-panel .sensing-state { font-size:17px; }
+input:disabled { opacity:.5; cursor:default; }
+.plot-label { position:absolute; top:0; left:0; max-width:45%; font-size:10px; line-height:1.4; letter-spacing:.8px; color:var(--muted); pointer-events:none; }
+.plot-state { position:absolute; top:36%; left:50%; transform:translate(-50%,-50%); font-size:12px; letter-spacing:2px; padding:5px 12px; background:#000; pointer-events:none; }
+.point-readout { position:absolute; bottom:6%; left:50%; transform:translateX(-50%); max-width:calc(100% - 8px); overflow-wrap:anywhere; font-size:11px; background:#000; border:1px solid var(--line); border-radius:3px; padding:5px 8px; pointer-events:none; }
+.plot-caption { display:flex; justify-content:space-between; flex-wrap:wrap; gap:4px 18px; color:var(--muted); font-size:10px; margin-top:10px; letter-spacing:.2px; }
+.notice { color:#fff; border-left:2px solid #fff; padding:6px 9px; font-size:12px; margin-top:10px; overflow-wrap:anywhere; }
+.sidebar { display:grid; gap:20px; min-width:0; border-left:1px solid var(--line); padding-left:28px; }
+.sensing-panel { padding-top:18px; padding-bottom:18px; }
+.sensing-state { margin:0 0 12px; font-size:18px; line-height:1.5; overflow-wrap:anywhere; }
+.sensing-panel[data-state="ready"] { border-color:#6b6b6b; }
+.sensor-states { display:flex; flex-wrap:wrap; gap:6px 16px; color:var(--muted); font-size:11px; }
+.sensor-states strong { color:var(--text); font-weight:400; margin-left:6px; }
+.sensor-legend { display:flex; flex-wrap:wrap; align-items:center; gap:4px 8px; color:var(--muted); font-size:10px; margin-top:10px; }
+.uwb-key { color:#62e4ef; font-size:20px; line-height:1; }
+.sensor-telemetry>div { min-height:34px; grid-template-columns:86px minmax(0,1fr); }
+.sensor-telemetry dd { font-size:14px; }
+.telemetry dd.detail-value { font-size:12px; }
+.uwb-panel h2 { margin-bottom:12px; }
+.panel { border:1px solid var(--line); border-radius:8px; padding:22px; min-width:0; }
+h2 { margin:0 0 16px; font:500 12px/1.4 var(--mono); letter-spacing:1.8px; }
+h2 span { float:right; color:var(--muted); letter-spacing:0; }
+.status-panel h2 { border-bottom:1px solid var(--line); padding-bottom:15px; margin-bottom:6px; }
+.telemetry { margin:0; }
+.telemetry>div { display:grid; grid-template-columns:75px minmax(0,1fr); align-items:center; gap:10px; min-height:46px; }
+dt { color:var(--muted); font-size:11px; letter-spacing:1px; }
+dd { margin:0; text-align:right; font-size:19px; overflow-wrap:anywhere; }
+dd select { width:auto; max-width:100%; text-align:right; font-size:17px; }
+#source { font-size:13px; }
+.sector-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+.sector-grid>div { min-width:0; padding:13px 12px; border:1px solid var(--line); border-radius:5px; }
+h3 { color:var(--muted); font:400 10px/1.4 var(--mono); letter-spacing:1.3px; margin:0 0 15px; }
+.sector-grid output { display:block; font-size:clamp(21px,2vw,29px); line-height:1.2; font-weight:500; letter-spacing:-1px; }
+.footer { border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:14px; padding:10px clamp(16px,2.5vw,40px); font-size:11px; letter-spacing:.8px; color:var(--muted); }
+.footer-actions { display:flex; gap:8px; }
+.footer-actions button { font-size:12px; min-height:40px; padding:6px 12px; }
+.file-controls { display:flex; align-items:center; gap:12px; margin-top:12px; }
+.file-controls input { flex:1; width:0; padding:0; }
+.file-controls output { font-size:12px; white-space:nowrap; }
+dialog { width:calc(100% - 28px); max-width:560px; max-height:calc(100dvh - 32px); padding:24px; margin:auto; overflow:auto; color:var(--text); background:#080808; border:1px solid #555; border-radius:7px; }
+dialog::backdrop { background:rgba(0,0,0,.85); }
+.dialog-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+.dialog-heading h2 { font-size:16px; margin:0; }
+.dialog-heading button { padding:6px 12px; }
+fieldset { border:0; padding:0; margin:20px 0; min-width:0; }
+legend { font-size:12px; padding:0; margin:0 0 12px; }
+.fields { display:grid; gap:12px; }
+.fields.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.fields label { display:flex; flex-direction:column; gap:6px; color:var(--muted); font-size:12px; }
+.fields input { width:100%; font-size:15px; }
+.checks { display:flex; flex-wrap:wrap; gap:12px 24px; margin-top:16px; }
+.checks label { display:flex; align-items:center; gap:8px; font-size:12px; min-height:32px; }
+.checks input { width:16px; height:16px; margin:0; }
+.dialog-actions { display:flex; justify-content:flex-end; gap:8px; margin:20px 0; }
+button.primary { color:#000; background:#fff; border-color:#fff; }
+button.primary:hover { color:#fff; }
+.utility-actions { display:flex; gap:8px; flex-wrap:wrap; padding:18px 0; border-top:1px solid var(--line); }
+.utility-actions button { font-size:12px; padding:8px 12px; }
+.hint { color:var(--muted); font-size:11px; margin:12px 0 0; }
+summary { padding:10px 0; cursor:pointer; font-size:12px; }
+.compact>div { grid-template-columns:130px minmax(0,1fr); min-height:32px; }
+.compact dd { font-size:12px; }
+.toast { position:fixed; z-index:5; bottom:18px; left:50%; transform:translateX(-50%); width:max-content; max-width:calc(100% - 28px); border:1px solid #777; background:#111; padding:10px 16px; font-size:12px; overflow-wrap:anywhere; }
+@media (min-width:1500px) { .workspace { grid-template-columns:minmax(0,1fr) 390px; } .panel { padding:26px; } .sidebar { padding-left:32px; } }
+@media (max-width:1100px) and (min-width:901px) { .workspace { grid-template-columns:minmax(0,1fr) 270px; gap:20px; } .sidebar { padding-left:18px; } .panel { padding:16px; } .sector-grid>div { padding:12px 10px; } }
+@media (max-width:900px) { .header { min-height:64px; } .workspace { grid-template-columns:minmax(0,1fr); gap:24px; padding-top:16px; } .radar-stage { width:100%; max-width:650px; } .sidebar { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; border:0; padding:0; } .panel { padding:20px; } .sector-grid>div { padding:16px 12px; } .sector-grid output { font-size:28px; } }
+@media (max-width:580px) { h1 { font-size:20px; } h1 span { margin-left:6px; font-size:11px; letter-spacing:2px; } .brand { gap:8px; } .brand img { width:26px; height:26px; } .connection { font-size:10px; letter-spacing:.5px; gap:6px; } .workspace { gap:20px; } .sidebar { grid-template-columns:minmax(0,1fr); gap:14px; } .status-panel { padding:18px; } .telemetry>div { min-height:42px; } .sector-grid>div { padding:16px; } .sector-grid output { font-size:29px; } .plot-caption { font-size:9px; } .plot-label { font-size:9px; } .footer { flex-wrap:wrap; } .fields.three { grid-template-columns:minmax(0,1fr); } dialog { padding:20px; } .fields label { display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:14px; } }
+@media (max-width:360px) { .header { padding:12px; } h1 { font-size:18px; } h1 span { font-size:10px; letter-spacing:1px; } .brand img { display:none; } .workspace { padding-left:12px; padding-right:12px; } .footer-note { display:none; } .connection { font-size:9px; } .point-readout { font-size:9px; } }
+@media (min-width:901px) { .workspace { align-items:start; } .radar-panel { position:sticky; top:20px; } .sidebar { gap:14px; } .panel { padding:17px 20px; } .telemetry>div { min-height:39px; } .sensor-telemetry>div { min-height:31px; } }
+@media (max-width:900px) and (min-width:581px) { .sensing-panel { grid-column:1 / -1; } .uwb-panel { grid-row:span 2; } }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; } }
+.dual-intro { margin-top:0; }
+.dual-sensor { border-top:1px solid var(--line); padding-top:14px; margin-top:14px; }
+.dual-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.dual-heading h3 { margin:0; color:var(--text); font:500 12px/1.5 var(--sans, sans-serif); letter-spacing:0; }
+.dual-heading strong { color:#f1c66a; font-size:11px; font-weight:500; }
+.dual-sensor[data-state="live"] .dual-heading strong { color:#91ded2; }
+.dual-sensor[data-state="invalid"] .dual-heading strong { color:#f1c66a; }
+.dual-sensor .detail-value { font-size:12px; }
+.field-preview-panel { border-color:#725b3a; }
+.field-preview-panel h2 span,.field-preview-legend { color:#eabf7e; }
+.field-preview-toggle { display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:12px; }
+.field-preview-toggle input { width:16px; height:16px; margin:0; }
+.field-preview-panel .sensing-state { font-size:15px; }
+.field-preview-panel .sensor-telemetry>div { grid-template-columns:105px minmax(0,1fr); }
+.field-preview-panel dt { letter-spacing:0; }
+.virtual-controls-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:14px; }
+.virtual-controls-grid button { min-height:48px; touch-action:none; user-select:none; }
+.virtual-controls-grid button[data-virtual="forward"] { grid-column:2; }
+.virtual-controls-grid button[data-virtual="reverse"] { grid-column:2; }
+.virtual-controls-grid button[data-virtual="stop"] { border-color:#cf7267; color:#f0b2a9; }
+.virtual-controls [role="status"] { font-size:13px; margin:12px 0 0; }
+
+/* 조종 목업: 중앙 센싱 화면, 양쪽 가상 조종, 아래 접이식 센서 정보. */
+.workspace { max-width:1800px; grid-template-columns:minmax(150px, 1fr) minmax(0, 3fr) minmax(150px, 1fr); grid-template-areas:'left radar right' 'status status status' 'details details details'; align-items:stretch; gap:16px; }
+.drive-left { grid-area:left; }
+.radar-panel { grid-area:radar; position:static; }
+.drive-right { grid-area:right; }
+.drive-status { grid-area:status; display:flex; flex-wrap:wrap; justify-content:center; gap:6px 20px; color:#b8c5cf; font-size:11px; padding:10px; border:1px solid #25303a; border-radius:8px; background:#10171d; }
+.sensor-details { grid-area:details; min-width:0; border:1px solid #2a323a; border-radius:8px; background:#0b0f13; }
+.sensor-details > summary { padding:15px 18px; font-size:13px; color:#d4e5ed; }
+.sensor-details[open] > summary { border-bottom:1px solid #2a323a; }
+.sensor-details .sidebar { border:0; padding:18px; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); align-items:start; }
+.drive-side { display:flex; flex-direction:column; align-items:stretch; justify-content:flex-start; gap:9px; min-width:0; padding:14px; border:1px solid #27333d; border-radius:12px; background:linear-gradient(155deg,#141b22,#0a0d11); }
+.drive-caption { margin:auto 0 3px; color:#a5b5c1; text-align:center; font-size:11px; letter-spacing:.1em; }
+.emergency-button { min-height:54px; background:#8d2427; border-color:#e17979; font-size:clamp(15px,1.5vw,20px); font-weight:700; }
+.emergency-button span { font-size:10px; font-weight:400; }
+.emergency-button:hover:not(:disabled) { background:#a43236; border-color:#fff; }
+.axis-pad { width:min(100%,180px); aspect-ratio:1; margin:0 auto; display:flex; align-items:stretch; overflow:hidden; border:1px solid #416782; border-radius:50%; background:#172b39; box-shadow:inset 0 0 22px #080f14; }
+.axis-vertical { flex-direction:column; }
+.axis-horizontal { flex-direction:row; }
+.axis-pad button { flex:1; min-width:0; min-height:0; padding:4px; border:0; border-radius:0; background:transparent; color:#c2e4f4; font-size:clamp(16px,2.5vw,26px); touch-action:none; user-select:none; -webkit-user-select:none; }
+.axis-pad button span { display:block; color:#b5c9d5; font-size:10px; }
+.axis-pad button:active { background:#2b526b; }
+.axis-vertical button + button { border-top:1px solid #416782; }
+.axis-horizontal button + button { border-left:1px solid #416782; }
+.rpm-setting { display:flex; justify-content:space-between; flex-wrap:wrap; color:#e2e8ec; font-size:12px; }
+.rpm-setting span,.drive-hint { color:#99a8b5; font-size:10px; }
+.rpm-input { width:100%; min-height:42px; border-color:#496376; background:#101920; }
+.drive-hint { margin:0; }
+.rpm-current { display:grid; grid-template-columns:1fr auto; gap:3px; padding:10px; border:1px solid #30414d; border-radius:6px; background:#0a1116; color:#bacbd5; font-size:11px; }
+.rpm-current strong { color:#f2f6f8; font-size:18px; }
+.rpm-current small { grid-column:1 / -1; color:#9ba9b3; }
+@media (min-width:701px) and (orientation:landscape) {
+  .workspace { padding-top:12px; }
+  .radar-stage { width:min(100%,calc(100svh - 210px)); }
+  .radar-panel { align-self:center; }
+  .drive-side { min-height:min(480px,calc(100svh - 180px)); }
+}
+@media (max-height:550px) and (orientation:landscape) {
+  .header { min-height:48px; padding:7px 18px; }
+  .workspace { padding:8px 14px; gap:8px; grid-template-columns:minmax(110px,1fr) minmax(0,2.4fr) minmax(110px,1fr); }
+  .drive-side { min-height:0; padding:8px; gap:4px; }
+  .radar-stage { width:min(100%,calc(100svh - 132px)); }
+  .axis-pad { width:min(100%,120px); }
+  .emergency-button { min-height:40px; }
+  .rpm-current { padding:4px 7px; }
+  .rpm-input { min-height:32px; padding:4px; }
+  .plot-caption,.sensor-legend { margin-top:3px; }
+}
+@media (max-width:700px) and (orientation:portrait) {
+  .workspace { grid-template-columns:1fr 1fr; grid-template-areas:'radar radar' 'left right' 'status status' 'details details'; }
+  .radar-stage { max-width:500px; }
+  .drive-side { min-height:250px; }
+}
+@media (max-width:480px) and (orientation:landscape) {
+  .workspace { grid-template-columns:minmax(90px,1fr) minmax(0,2fr) minmax(90px,1fr); }
+  .drive-side { padding:5px; }
+}
