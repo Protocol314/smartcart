@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>스마트카트 최신 코드 목록</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --background: #f6f8fa;
+      --surface: #fff;
+      --text: #1c2633;
+      --muted: #46566a;
+      --line: #d4dce5;
+      --link: #0758a1;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #111820;
+        --surface: #19222e;
+        --text: #e3ebf5;
+        --muted: #b8c8da;
+        --line: #3c4c61;
+        --link: #8cc8ff;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+      font: 1rem / 1.65 system-ui, "Malgun Gothic", sans-serif;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+    }
+    main {
+      width: min(100%, 76rem);
+      margin-inline: auto;
+      padding: clamp(1.25rem, 4vw, 3rem);
+    }
+    h1, h2 { line-height: 1.3; }
+    h1 { margin: 0 0 .5rem; font-size: clamp(1.8rem, 5vw, 2.6rem); }
+    h2 { margin: 2.2rem 0 .75rem; font-size: 1.35rem; }
+    p { margin: 0 0 .9rem; color: var(--muted); }
+    table {
+      width: 100%;
+      margin-bottom: 1rem;
+      border-collapse: collapse;
+      table-layout: fixed;
+      background: var(--surface);
+    }
+    th, td {
+      padding: .65rem .75rem;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th { background: var(--background); }
+    th:first-child { width: 19%; }
+    th:nth-child(2) { width: 39%; }
+    td:first-child { font-weight: 600; }
+    a { color: var(--link); text-underline-offset: .15em; }
+    code { font-family: ui-monospace, Consolas, monospace; font-size: .93em; }
+    @media (max-width: 40rem) {
+      table { font-size: .875rem; }
+      th, td { padding: .45rem; }
+      th:first-child { width: 23%; }
+    }
+  </style>
+</head>
+<body>
+<main>
+<h1>스마트카트 최신 코드 목록</h1>
+<p>2026-11-26 기준 · GitHub <code>Protocol314/smartcart</code> <code>main</code> (<code>af6b1b2</code>)</p>
+<h2>PC 개발용</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>역할</th>
+<th>코드</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>센싱·추적</td>
+<td>ROS 2 센싱, 단일·좌우 BU04 수집, LiDAR 군집과 UWB 대상 추적</td>
+<td><a href="../pc-development/SmartCart-D5-v2/smartcart/sensing.py"><code>sensing.py</code></a> · <a href="../pc-development/SmartCart-D5-v2/smartcart/smartcart_uwb/"><code>smartcart_uwb/</code></a> · <a href="../pc-development/SmartCart-D5-v2/smartcart/smartcart_tracking/"><code>smartcart_tracking/</code></a></td>
+</tr>
+<tr>
+<td>센서 드라이버</td>
+<td>C1 LiDAR <code>/scan</code> 발행, BU04 PDOA 프레임 파싱</td>
+<td><a href="../pc-development/smartcart_ws/src/sllidar_ros2/launch/sllidar_c1_launch.py"><code>sllidar_c1_launch.py</code></a> · <a href="../pc-development/SmartCart-D5-v2/components/c_key_core/bu04_pdoa.c"><code>bu04_pdoa.c</code></a></td>
+</tr>
+<tr>
+<td>Pi 기반 가상 조종</td>
+<td>MOCK 출력, LiDAR·BU04 이상 잠금, 2초 PWM 응답 감시</td>
+<td><a href="../pc-development/manual.sh"><code>manual.sh</code></a> · <a href="../pc-development/SmartCart_ManualDrive_180/smartcart/smartcart_motor/sensor_guard.py"><code>sensor_guard.py</code></a> · <a href="../pc-development/SmartCart_ManualDrive_180/smartcart/web/js/manual_controls.js"><code>manual_controls.js</code></a></td>
+</tr>
+<tr>
+<td>18084 가상 화면</td>
+<td>실측 센서 표시, 수동 조종·자율주행 미리보기, 연결·정지 진단. Pi 적용 미확인</td>
+<td><a href="../pc-development/virtual-lab-18084/virtual_lan_server.py"><code>virtual_lan_server.py</code></a> · <a href="../pc-development/virtual-lab-18084/web/"><code>web/</code></a> · <a href="../pc-development/virtual-lab-18084/tests/"><code>tests/</code></a></td>
+</tr>
+<tr>
+<td>통합 개발 기준</td>
+<td>센싱·추적·수동/추종 감독기, 안전 상태 변환, 가상 출력</td>
+<td><a href="../pc-development/integration-lab/smartcart/"><code>integration-lab/smartcart/</code></a> · <a href="../pc-development/integration-lab/smartcart/smartcart_motor/supervisor.py"><code>supervisor.py</code></a> · <a href="../pc-development/integration-lab/smartcart/smartcart_motor/safety_provider.py"><code>safety_provider.py</code></a></td>
+</tr>
+<tr>
+<td>회귀 시험</td>
+<td>Python·JavaScript, BU03·BU04 C 호스트 회귀</td>
+<td><a href="../pc-development/integration-lab/smartcart/tests/"><code>smartcart/tests/</code></a> · <a href="../pc-development/integration-lab/components/c_key_core/"><code>c_key_core/</code></a> · <a href="../pc-development/integration-lab/tests/run_host_tests.bat"><code>Windows</code></a> · <a href="../pc-development/integration-lab/tests/run_host_tests.sh"><code>Linux</code></a></td>
+</tr>
+<tr>
+<td>이전 추종 코드</td>
+<td>PR #1의 Python 소스 3개 보존</td>
+<td><a href="../pc-development/contributions/smartcart_latest_pr/"><code>smartcart_latest_pr/</code></a></td>
+</tr>
+</tbody>
+</table>
+<h2>Pi 직접 실행 경로</h2>
+<p>Raspberry Pi 4 · Ubuntu 22.04 ARM64 · ROS 2 Humble · C1 LiDAR · 단일 BU04 · BU03 태그</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>Pi 경로</th>
+<th>확인 상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>센싱 시작</td>
+<td><code>~/smartcart/sensors.sh</code> → <code>SmartCart-D5-v2/smartcart/scripts/start-single-left-trial.sh</code></td>
+<td>8765 HTTP 응답 보고. 현행 스크립트 일치 및 측정 유효성 미확인</td>
+</tr>
+<tr>
+<td>실제 조종 서버</td>
+<td><code>~/smartcart/real.sh</code> → <code>~/smartcart/releases/real-uwb-v1/server.py</code></td>
+<td>11월 24일 8081 HTTPS 접속, GPIO 프로세스 실행 및 UWB 추종 시험 보고. Pi 최종 소스·설정 대조와 실차 안전 검수 미완료</td>
+</tr>
+<tr>
+<td>현장 설정</td>
+<td><code>~/smartcart/releases/real-uwb-v1/follow_config.json</code> · <code>~/smartcart/releases/real-uwb-v1/live_zone_modules/cart_geometry.json</code></td>
+<td>Pi에 존재 확인. 장착값·설정 유효성 검수 미완료</td>
+</tr>
+</tbody>
+</table>
+<p>실차 확인 항목은 센서 무효·ID 불일치·시간 초과 시 정지와 재활성화, 2초 PWM 응답 감시, 모터 극성, 물리 비상정지다. <a href="../SMARTCART_PROGRESS.md">현장 진행 기록</a> · <a href="../runbook/Smart-Cart Raspberry Pi 4 기본 운영 런북.md">Pi 운영 런북</a></p>
+<h2>GitHub의 Pi 소스</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>역할·상태</th>
+<th>코드</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>11월 24일 현장 스냅샷</td>
+<td>Pi에서 추출한 소스 기반. 일부 파일이 현행 Pi와 다르며 아래 추종 서버 검토본은 GPIO 잠금·MOCK 전용</td>
+<td><a href="../pi-runtime/pi-field-snapshot/SNAPSHOT-REVIEW.md"><code>SNAPSHOT-REVIEW.md</code></a></td>
+</tr>
+<tr>
+<td>센싱</td>
+<td>단일 BU04 실행기·ROS 센싱·C1 LiDAR 시작</td>
+<td><a href="../pi-runtime/pi-field-snapshot/sensors.sh"><code>sensors.sh</code></a> · <a href="../pi-runtime/pi-field-snapshot/SmartCart-D5-v2/smartcart/scripts/start-single-left-trial.sh"><code>start-single-left-trial.sh</code></a> · <a href="../pi-runtime/pi-field-snapshot/SmartCart-D5-v2/smartcart/launch/sensing.launch.py"><code>sensing.launch.py</code></a> · <a href="../pi-runtime/pi-field-snapshot/smartcart_ws/src/sllidar_ros2/launch/sllidar_c1_launch.py"><code>sllidar_c1_launch.py</code></a></td>
+</tr>
+<tr>
+<td>8081 서버·제어</td>
+<td>HTTPS 조종·추종 서버, 제어 브리지, UWB 유효성·만료·이상치 처리</td>
+<td><a href="../pi-runtime/pi-field-snapshot/real.sh"><code>real.sh</code></a> · <a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/server.py"><code>server.py</code></a> · <a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/runtime.py"><code>runtime.py</code></a> · <a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/uwb_control.py"><code>uwb_control.py</code></a></td>
+</tr>
+<tr>
+<td>LiDAR 판정</td>
+<td>장애물·미관측 구간, 정지·회전 영역 및 경로 계산</td>
+<td><a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/lidar_guard.py"><code>lidar_guard.py</code></a> · <a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/reactive_lidar.py"><code>reactive_lidar.py</code></a> · <a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/zone_live.py"><code>zone_live.py</code></a> · <a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/segment_navigation.py"><code>segment_navigation.py</code></a></td>
+</tr>
+<tr>
+<td>화면·검증</td>
+<td>조종 화면, UWB 추종 UI, 합성 입력·MOCK 회귀</td>
+<td><a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/web/index.html"><code>web/index.html</code></a> · <a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/web/js/uwb_real.js"><code>uwb_real.js</code></a> · <a href="../pi-runtime/pi-field-snapshot/releases/real-uwb-v1/tests/"><code>tests/</code></a></td>
+</tr>
+<tr>
+<td>Pi 가상 실행 후보</td>
+<td>ROS·BU04 빌드 준비, 읽기 전용 센싱 진단, 8081 MOCK 조종</td>
+<td><a href="../pi-runtime/prepare_ros.sh"><code>prepare_ros.sh</code></a> · <a href="../pi-runtime/check_pi.sh"><code>check_pi.sh</code></a> · <a href="../pi-runtime/manual.sh"><code>manual.sh</code></a></td>
+</tr>
+<tr>
+<td>11월 19일 내보내기</td>
+<td>기존 Pi 소스 보존본. 현행 설치본과 해시 대조 전</td>
+<td><a href="../pi-runtime/pi-export-reference/"><code>pi-export-reference/</code></a></td>
+</tr>
+</tbody>
+</table>
+</main>
+</body>
+</html>
